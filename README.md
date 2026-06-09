@@ -4,6 +4,10 @@
 
 DeepSeek-Codex-Combo (`dcc`) is a local Codex harness for using DeepSeek models through a Responses-compatible provider proxy, a reversible Codex installer, and a bundled Codex plugin. It ships CLI commands, skills, hooks, MCP server declarations, model routing, rules injection, LSP/AST/hashline helpers, and evidence-oriented orchestration commands.
 
+## Inspiration
+
+DeepSeek-Codex-Combo is inspired by the ideas and workflows explored in LazyCodex, OMO, and Reasonix. It adapts those influences into a DeepSeek-focused Codex harness with local installation, model routing, agent profiles, proxying, and evidence-driven verification.
+
 ## Why not just set the model?
 
 Setting a model name does not handle the operational surface Codex needs:
