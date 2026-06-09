@@ -2,10 +2,39 @@
 
 This check runs DeepSeek-Codex-Combo inside a fresh Docker Linux user environment. It is intended to answer one question: can a real user install the release payload, launch the generated Codex profiles, route Pro/Flash automatically, use the proxy, and uninstall cleanly without touching the host Codex home?
 
+## Quick Start
+
+```bash
+pnpm docker:clean
+pnpm docker:test
+```
+
+`pnpm docker:test` is the simple local QA command. It uses mock DeepSeek
+responses, so it does not need an API key and does not spend API credits.
+
+Before running the full test, you can check Docker availability with:
+
+```bash
+pnpm docker:preflight
+```
+
+To remove generated Docker test output later:
+
+```bash
+pnpm docker:clean
+```
+
+That cleanup removes only DCC Docker E2E artifacts:
+
+- `.dcc/evidence/docker-user-install/`
+- `.dcc/release-docker/`
+- Docker containers named `dcc-user-install-e2e-*`
+- Docker images tagged `dcc-user-install-e2e:*`
+
 ## Default Mock Run
 
 ```bash
-pnpm test:docker:e2e
+pnpm docker:test
 ```
 
 The default run does not require `DEEPSEEK_API_KEY` and does not call DeepSeek. It builds a Docker image with Node, pnpm, Codex CLI, and the current checkout, then runs the installed release payload with a mock upstream response.
@@ -39,7 +68,7 @@ Evidence is written under:
 ## Live DeepSeek Run
 
 ```bash
-DEEPSEEK_API_KEY=sk-... pnpm test:docker:e2e:live
+DEEPSEEK_API_KEY=sk-... pnpm docker:test:live
 ```
 
 Live mode is opt-in and may incur API cost. It sends real `/v1/responses` calls for both `deepseek-v4-flash` and `deepseek-v4-pro`. The key is passed only at `docker run` time and is redacted from runner logs and JSON evidence. The key is never passed as a Docker build argument.

@@ -70,11 +70,16 @@ node bin/dcc.mjs --help
 For Docker-based user-install E2E testing:
 
 ```bash
-pnpm test:docker:e2e
-DEEPSEEK_API_KEY=sk-... pnpm test:docker:e2e:live
+pnpm docker:clean
+pnpm docker:test
 ```
 
-The default Docker run is mock-only and does not call DeepSeek. The live command is opt-in and may incur API cost. See `docs/docker-user-install-e2e.md` for the full scenario and evidence layout.
+The default Docker run is mock-only and does not call DeepSeek. Use
+`pnpm docker:preflight` to check Docker availability, `pnpm docker:clean` to
+remove generated DCC Docker artifacts, and
+`DEEPSEEK_API_KEY=sk-... pnpm docker:test:live` only when you want real API
+calls. See `docs/docker-user-install-e2e.md` for the full scenario and evidence
+layout.
 
 For a durable local release payload from this checkout:
 

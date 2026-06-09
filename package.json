@@ -42,6 +42,10 @@
     "test:docker:e2e": "node scripts/docker-user-install-e2e.mjs",
     "test:docker:e2e:live": "node scripts/docker-user-install-e2e.mjs --live",
     "test:docker:e2e:vitest": "vitest run tests/e2e/docker/user-install.test.ts",
+    "docker:test": "node scripts/docker-user-install-e2e.mjs",
+    "docker:test:live": "node scripts/docker-user-install-e2e.mjs --live",
+    "docker:preflight": "node scripts/docker-user-install-e2e.mjs --preflight-only",
+    "docker:clean": "node scripts/docker-clean.mjs",
     "build": "node scripts/build-cli.mjs && pnpm -r build",
     "dcc": "node bin/dcc.mjs",
     "prepublishOnly": "pnpm build"
