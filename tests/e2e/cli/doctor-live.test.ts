@@ -243,7 +243,7 @@ describe("dcc doctor live CLI", () => {
       );
       const output = `${result.stdout}\n${result.stderr}`;
 
-      expect(result.status).toBe(0);
+      expect(result.status, output).toBe(0);
       expect(output).toContain("Live: models ok");
       expect(output).toContain("Live: chat smoke ok");
       expect(output).toContain("Proxy: responses smoke ok");

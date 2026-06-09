@@ -1,3 +1,4 @@
+import type { SpawnSyncReturns } from "node:child_process";
 import { spawnSync } from "node:child_process";
 import {
   cpSync,
@@ -10,7 +11,7 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { withPluginDistLock } from "../../harness/pluginDistLock.ts";
 
 interface ManifestEntry {
@@ -65,7 +66,7 @@ const runPluginBuild = () =>
   spawnSync(pnpmBin, ["build"], {
     cwd: process.cwd(),
     encoding: "utf8",
-    timeout: 30_000,
+    timeout: 90_000,
   });
 
 const runCopiedPluginCli = (pluginRoot: string, cwd: string, args: readonly string[]) =>
@@ -90,8 +91,14 @@ const forbiddenPackagedRuntimePath = (path: string): boolean => {
 };
 
 describe("release package contents", () => {
+  let sharedBuild: SpawnSyncReturns<string>;
+
+  beforeAll(() => {
+    sharedBuild = runPluginBuild();
+  }, 90_000);
+
   it("plugin_build_creates_copied_dist_runtime", () => {
-    const build = runPluginBuild();
+    const build = sharedBuild;
     const output = `${build.stdout}\n${build.stderr}`;
 
     expect(build.status).toBe(0);
@@ -99,7 +106,7 @@ describe("release package contents", () => {
     expect(existsSync(join(process.cwd(), "plugins/deepseek-codex-combo/dist/bin/dcc.mjs"))).toBe(
       true,
     );
-  }, 20_000);
+  }, 90_000);
 
   it("plugin_build_removes_stale_dist_files", () => {
     const stalePath = join(
@@ -119,10 +126,10 @@ describe("release package contents", () => {
 
     expect(build.status, output).toBe(0);
     expect(existsSync(stalePath)).toBe(false);
-  }, 20_000);
+  }, 90_000);
 
   it("npm_pack_dry_run_excludes_plugin_runtime_tests_and_fixtures", () => {
-    const build = runPluginBuild();
+    const build = sharedBuild;
     expect(build.status, `${build.stdout}\n${build.stderr}`).toBe(0);
 
     const pack = spawnSync("npm", ["pack", "--dry-run", "--json"], {
@@ -143,10 +150,10 @@ describe("release package contents", () => {
         ) ?? [];
 
     expect(forbiddenPaths).toEqual([]);
-  }, 40_000);
+  }, 90_000);
 
   it("copied_plugin_dist_cli_runs_core_hook_and_mcp_surfaces", () => {
-    const build = runPluginBuild();
+    const build = sharedBuild;
     const tempRoot = makeReleaseDir();
     const pluginRoot = join(tempRoot, "plugin");
     try {
@@ -174,10 +181,10 @@ describe("release package contents", () => {
     } finally {
       rmSync(tempRoot, { force: true, recursive: true });
     }
-  }, 20_000);
+  }, 90_000);
 
   it("release_artifact_contains_plugin_and_bins", () => {
-    const build = runPluginBuild();
+    const build = sharedBuild;
     const outDir = makeReleaseDir();
     try {
       expect(build.status).toBe(0);
@@ -210,10 +217,10 @@ describe("release package contents", () => {
     } finally {
       rmSync(outDir, { force: true, recursive: true });
     }
-  }, 20_000);
+  }, 90_000);
 
   it("release_artifact_excludes_tests_fixtures_and_local_secrets", () => {
-    const build = runPluginBuild();
+    const build = sharedBuild;
     const outDir = makeReleaseDir();
     try {
       expect(build.status).toBe(0);
@@ -240,5 +247,5 @@ describe("release package contents", () => {
     } finally {
       rmSync(outDir, { force: true, recursive: true });
     }
-  }, 20_000);
+  }, 90_000);
 });

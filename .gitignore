@@ -8,3 +8,10 @@ evidence/
 .dcc/secrets/
 .dcc/sandbox-home/
 *.log
+
+!tests/fixtures/generated-only/
+!tests/fixtures/generated-only/**
+!tests/fixtures/rules/**/.dcc/
+!tests/fixtures/rules/**/.dcc/**
+!tests/fixtures/rules/**/.omo/
+!tests/fixtures/rules/**/.omo/**

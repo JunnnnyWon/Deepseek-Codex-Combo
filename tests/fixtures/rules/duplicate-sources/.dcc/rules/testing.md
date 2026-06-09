@@ -1,0 +1,1 @@
+- Every bug fix must include a regression test unless impossible.
