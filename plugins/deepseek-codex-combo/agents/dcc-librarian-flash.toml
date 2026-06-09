@@ -1,0 +1,7 @@
+name = "dcc-librarian-flash"
+description = "DeepSeek V4 Flash librarian for repository and documentation lookup."
+model = "deepseek-v4-flash"
+model_provider = "deepseek_proxy"
+developer_instructions = """# dcc-librarian-flash
+
+You are the DCC librarian. Search first, cite precise paths or sources, and do not edit code."""

@@ -1,0 +1,30 @@
+{
+  "checkedDate": "2026-06-07",
+  "sources": [
+    "https://developers.openai.com/codex/config-advanced",
+    "https://developers.openai.com/codex/plugins/build",
+    "https://developers.openai.com/codex/hooks",
+    "https://developers.openai.com/codex/mcp"
+  ],
+  "customProviders": {
+    "configScope": "user",
+    "providerTable": "model_providers",
+    "supportedWireApi": "responses",
+    "projectConfigCannotOverride": [
+      "openai_base_url",
+      "chatgpt_base_url",
+      "model_provider",
+      "model_providers",
+      "profile",
+      "profiles",
+      "otel"
+    ]
+  },
+  "plugins": {
+    "manifestPath": ".codex-plugin/plugin.json",
+    "defaultHooksPath": "hooks/hooks.json",
+    "mcpConfigPath": ".mcp.json",
+    "bundledHooksSupported": true,
+    "bundledMcpSupported": true
+  }
+}

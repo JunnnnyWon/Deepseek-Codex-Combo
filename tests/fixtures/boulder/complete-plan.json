@@ -1,0 +1,32 @@
+{
+  "hook_event_name": "Stop",
+  "boulder": {
+    "version": 1,
+    "activeSessionId": "dcc_active",
+    "sessions": {
+      "dcc_active": {
+        "planPath": "plans/demo.md",
+        "status": "complete",
+        "createdAt": "2026-06-07T12:00:00.000Z",
+        "updatedAt": "2026-06-07T12:10:00.000Z",
+        "modelProfile": "deepseek-pro",
+        "tasks": [
+          {
+            "id": "T1",
+            "text": "Implement hook runtime test",
+            "status": "done",
+            "evidence": ["evidence/production-dcc/task-9-hooks-runtime.txt"]
+          }
+        ],
+        "acceptance": [
+          {
+            "id": "A1",
+            "text": "Need QA artifact",
+            "status": "done",
+            "evidence": ["evidence/production-dcc/task-9-hooks-runtime.txt"]
+          }
+        ]
+      }
+    }
+  }
+}

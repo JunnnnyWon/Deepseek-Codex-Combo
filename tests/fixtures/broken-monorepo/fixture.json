@@ -1,0 +1,5 @@
+{
+  "commands": ["pnpm test"],
+  "name": "broken-monorepo",
+  "status": "broken"
+}

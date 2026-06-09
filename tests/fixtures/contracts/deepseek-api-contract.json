@@ -1,0 +1,38 @@
+{
+  "checkedDate": "2026-06-07",
+  "sources": [
+    "https://api-docs.deepseek.com/",
+    "https://api-docs.deepseek.com/api/list-models",
+    "https://api-docs.deepseek.com/quick_start/pricing",
+    "https://api-docs.deepseek.com/guides/thinking_mode"
+  ],
+  "baseUrl": "https://api.deepseek.com",
+  "modelsEndpoint": "https://api.deepseek.com/models",
+  "chatCompletionsEndpoint": "https://api.deepseek.com/chat/completions",
+  "liveCallsDefault": "disabled",
+  "models": [
+    {
+      "id": "deepseek-v4-flash",
+      "ownedBy": "deepseek",
+      "thinkingModes": ["non-thinking", "thinking"],
+      "toolCalls": true,
+      "jsonOutput": true
+    },
+    {
+      "id": "deepseek-v4-pro",
+      "ownedBy": "deepseek",
+      "thinkingModes": ["non-thinking", "thinking"],
+      "toolCalls": true,
+      "jsonOutput": true
+    }
+  ],
+  "legacyModelNames": {
+    "deprecatedAfterUtc": "2026-07-24T15:59:00Z",
+    "aliases": ["deepseek-chat", "deepseek-reasoner"]
+  },
+  "reasoning": {
+    "field": "reasoning_content",
+    "passBackRequiredAfterToolCalls": true,
+    "durableLogsMayIncludeReasoningContent": false
+  }
+}

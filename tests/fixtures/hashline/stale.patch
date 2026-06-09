@@ -1,0 +1,4 @@
+path: tests/fixtures/hashline/target.txt
+@@ L1#00000000
+- alpha
++ omega

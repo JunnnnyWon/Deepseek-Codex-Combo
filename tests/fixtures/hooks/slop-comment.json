@@ -1,0 +1,5 @@
+{
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Edit",
+  "content": "// This function handles user login\nfunction loginUser() {\n  return true;\n}\n"
+}

@@ -1,0 +1,45 @@
+{
+  "name": "deepseek-codex-combo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "dcc": "./dist/bin/dcc.mjs",
+    "deepseek-codex-combo": "./dist/bin/deepseek-codex-combo.mjs"
+  },
+  "files": [
+    ".agents",
+    "dist",
+    "plugins/deepseek-codex-combo",
+    "README.md",
+    "CHANGELOG.md",
+    "docs",
+    "package.json"
+  ],
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "lint": "biome check .",
+    "live:cache": "node scripts/live-cache-diagnostics.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.base.json",
+    "test": "node scripts/vitest-run.mjs",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "vitest run tests/e2e",
+    "test:docker:e2e": "node scripts/docker-user-install-e2e.mjs",
+    "test:docker:e2e:live": "node scripts/docker-user-install-e2e.mjs --live",
+    "test:docker:e2e:vitest": "vitest run tests/e2e/docker/user-install.test.ts",
+    "build": "node scripts/build-cli.mjs && pnpm -r build",
+    "dcc": "node bin/dcc.mjs"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.16",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.2",
+    "vitest": "^4.1.8"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.0.4",
+    "hono": "^4.12.23",
+    "smol-toml": "^1.6.1",
+    "zod": "^4.4.3"
+  }
+}

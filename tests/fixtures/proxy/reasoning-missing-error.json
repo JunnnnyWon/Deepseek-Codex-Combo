@@ -1,0 +1,5 @@
+{
+  "status": 400,
+  "message": "reasoning_content missing",
+  "reasoning_content": "hidden-chain"
+}

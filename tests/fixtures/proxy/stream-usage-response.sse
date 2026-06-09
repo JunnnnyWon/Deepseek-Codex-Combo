@@ -1,0 +1,5 @@
+data: {"id":"chatcmpl_stream","choices":[{"index":0,"delta":{"content":"hello ","reasoning_content":"hidden-chain"}}]}
+
+data: {"id":"chatcmpl_stream","choices":[],"usage":{"prompt_tokens":100,"completion_tokens":8,"total_tokens":108,"prompt_cache_hit_tokens":70,"prompt_cache_miss_tokens":30,"completion_tokens_details":{"reasoning_tokens":2}}}
+
+data: [DONE]

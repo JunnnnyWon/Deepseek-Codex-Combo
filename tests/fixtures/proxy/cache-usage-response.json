@@ -1,0 +1,35 @@
+{
+  "request": {
+    "model": "deepseek-v4-flash",
+    "input": "Cache usage fixture prompt.",
+    "metadata": {
+      "dcc_cache_session_id": "fixture-cache-session"
+    },
+    "stream": false
+  },
+  "chatCompletion": {
+    "id": "chatcmpl_fixture_cache_usage",
+    "object": "chat.completion",
+    "model": "deepseek-v4-flash",
+    "choices": [
+      {
+        "index": 0,
+        "finish_reason": "stop",
+        "message": {
+          "role": "assistant",
+          "content": "Fixture answer."
+        }
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 100,
+      "completion_tokens": 7,
+      "total_tokens": 107,
+      "prompt_cache_hit_tokens": 80,
+      "prompt_cache_miss_tokens": 20,
+      "completion_tokens_details": {
+        "reasoning_tokens": 3
+      }
+    }
+  }
+}

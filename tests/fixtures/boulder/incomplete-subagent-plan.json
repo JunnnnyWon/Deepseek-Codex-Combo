@@ -1,0 +1,25 @@
+{
+  "hook_event_name": "SubagentStop",
+  "boulder": {
+    "version": 1,
+    "activeSessionId": "dcc_subagent",
+    "sessions": {
+      "dcc_subagent": {
+        "planPath": "plans/subagent-demo.md",
+        "status": "active",
+        "createdAt": "2026-06-07T12:00:00.000Z",
+        "updatedAt": "2026-06-07T12:05:00.000Z",
+        "modelProfile": "deepseek-flash",
+        "tasks": [
+          {
+            "id": "SA1",
+            "text": "Return subagent evidence",
+            "status": "pending",
+            "evidence": []
+          }
+        ],
+        "acceptance": []
+      }
+    }
+  }
+}

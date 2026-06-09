@@ -1,0 +1,70 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${PLUGIN_ROOT}/dist/bin/dcc.mjs hooks session-start",
+            "statusMessage": "DCC: checking DeepSeek proxy, model catalog, and project rules"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${PLUGIN_ROOT}/dist/bin/dcc.mjs hooks user-prompt-submit",
+            "statusMessage": "DCC: injecting rules and workflow hints"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${PLUGIN_ROOT}/dist/bin/dcc.mjs hooks post-tool-use",
+            "statusMessage": "DCC: running post-edit diagnostics"
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${PLUGIN_ROOT}/dist/bin/dcc.mjs hooks post-compact",
+            "statusMessage": "DCC: restoring compacted context hints"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${PLUGIN_ROOT}/dist/bin/dcc.mjs hooks stop",
+            "statusMessage": "DCC: checking active plan continuation"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${PLUGIN_ROOT}/dist/bin/dcc.mjs hooks subagent-stop",
+            "statusMessage": "DCC: checking subagent continuation"
+          }
+        ]
+      }
+    ]
+  }
+}

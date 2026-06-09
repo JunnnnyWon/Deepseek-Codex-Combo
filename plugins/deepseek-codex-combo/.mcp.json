@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "dcc-lsp": {
+      "command": "node",
+      "args": ["${PLUGIN_ROOT}/dist/bin/dcc.mjs", "lsp", "mcp"],
+      "env": {
+        "DCC_LSP_TIMEOUT_MS": "10000"
+      }
+    },
+    "dcc-ast-grep": {
+      "command": "node",
+      "args": ["${PLUGIN_ROOT}/dist/bin/dcc.mjs", "ast-grep", "mcp"]
+    },
+    "dcc-hashline": {
+      "command": "node",
+      "args": ["${PLUGIN_ROOT}/dist/bin/dcc.mjs", "hashline", "mcp"]
+    }
+  }
+}

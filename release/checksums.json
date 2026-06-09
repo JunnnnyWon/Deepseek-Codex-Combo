@@ -1,0 +1,22 @@
+{
+  "artifact": "deepseek-codex-combo-v1",
+  "generatedAt": "2026-06-07",
+  "files": [
+    "bin/dcc.mjs",
+    "package.json",
+    "plugins/deepseek-codex-combo/.codex-plugin/plugin.json",
+    "plugins/deepseek-codex-combo/.mcp.json",
+    "plugins/deepseek-codex-combo/hooks/hooks.json",
+    "plugins/deepseek-codex-combo/skills/dcc-plan/SKILL.md",
+    "plugins/deepseek-codex-combo/assets/.gitkeep",
+    "README.md",
+    "CHANGELOG.md",
+    "docs/architecture.md",
+    "docs/install.md",
+    "docs/model-routing.md",
+    "docs/provider-proxy.md",
+    "docs/codex-config.md",
+    "docs/troubleshooting.md",
+    "docs/security.md"
+  ]
+}

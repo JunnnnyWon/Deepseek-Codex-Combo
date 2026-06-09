@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+.dcc/
+.omo/
+evidence/
+.dcc/evidence/
+.dcc/secrets/
+.dcc/sandbox-home/
+*.log

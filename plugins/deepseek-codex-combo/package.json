@@ -1,0 +1,9 @@
+{
+  "name": "@deepseek-codex-combo/codex-plugin",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-dist.mjs"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "request": {
+    "model": "deepseek-v4-flash",
+    "input": "Summarize the fixture behavior.",
+    "metadata": {
+      "trace_id": "local-trace-fixture"
+    },
+    "stream": false
+  },
+  "chatCompletion": {
+    "id": "chatcmpl_fixture_text",
+    "object": "chat.completion",
+    "model": "deepseek-v4-flash",
+    "choices": [
+      {
+        "index": 0,
+        "finish_reason": "stop",
+        "message": {
+          "role": "assistant",
+          "content": "Fixture answer."
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "deepseek-codex-combo",
+  "version": "0.1.0",
+  "description": "DeepSeek V4 Pro/Flash harness for Codex.",
+  "author": {
+    "name": "DeepSeek-Codex-Combo Contributors"
+  },
+  "license": "MIT",
+  "keywords": ["codex", "deepseek", "agent-harness"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "DeepSeek Codex Combo",
+    "shortDescription": "DeepSeek V4 harness for Codex",
+    "longDescription": "DeepSeek Codex Combo provides a Codex-compatible DeepSeek V4 harness with local proxying, model routing, MCP declarations, companion hooks, planner skills, and evidence-first workflow support.",
+    "developerName": "DCC",
+    "category": "Developer Tools",
+    "capabilities": ["Hooks", "MCP Tools", "Workflow", "Model Routing"],
+    "defaultPrompt": [
+      "Use DeepSeek Codex Combo to inspect the current project plan.",
+      "Validate the DeepSeek proxy and plugin skeleton before installation."
+    ]
+  }
+}

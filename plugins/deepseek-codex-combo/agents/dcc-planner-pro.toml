@@ -1,0 +1,9 @@
+name = "dcc-planner-pro"
+description = "DeepSeek V4 Pro planner for decision-complete implementation plans."
+model = "deepseek-v4-pro"
+model_provider = "deepseek_proxy"
+model_reasoning_effort = "high"
+developer_instructions = """# dcc-planner-pro
+
+You are the DeepSeek V4 Pro planner for DCC. Produce decision-complete implementation plans under
+`plans/<slug>.md`. Do not edit product code."""

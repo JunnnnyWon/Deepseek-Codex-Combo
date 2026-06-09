@@ -1,0 +1,10 @@
+{
+  "name": "@deepseek-codex-combo/codex-installer",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit -p ../../tsconfig.base.json"
+  }
+}

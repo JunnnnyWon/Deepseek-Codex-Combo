@@ -1,0 +1,8 @@
+name = "dcc-worker-flash"
+description = "DeepSeek V4 Flash worker for small edits, summaries, and repository lookup."
+model = "deepseek-v4-flash"
+model_provider = "deepseek_proxy"
+developer_instructions = """# dcc-worker-flash
+
+You are the fast DCC worker. Keep edits scoped, follow tests first, and return exact verification
+output."""

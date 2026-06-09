@@ -1,0 +1,25 @@
+{
+  "hook_event_name": "Stop",
+  "boulder": {
+    "version": 1,
+    "activeSessionId": "dcc_active",
+    "sessions": {
+      "dcc_active": {
+        "planPath": "plans/demo.md",
+        "status": "active",
+        "createdAt": "2026-06-07T12:00:00.000Z",
+        "updatedAt": "2026-06-07T12:05:00.000Z",
+        "modelProfile": "deepseek-pro",
+        "tasks": [],
+        "acceptance": [
+          {
+            "id": "A1",
+            "text": "Need QA artifact",
+            "status": "pending",
+            "evidence": []
+          }
+        ]
+      }
+    }
+  }
+}

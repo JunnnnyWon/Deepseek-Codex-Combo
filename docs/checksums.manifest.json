@@ -1,0 +1,4 @@
+{
+  "description": "Static documentation pointer for release checksums. Generate the current checksum manifest with: node bin/dcc.mjs package --dry-run --out .dcc/release",
+  "manifest": "checksums.manifest.json"
+}

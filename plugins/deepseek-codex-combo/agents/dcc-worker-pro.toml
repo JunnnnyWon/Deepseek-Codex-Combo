@@ -1,0 +1,10 @@
+name = "dcc-worker-pro"
+description = "DeepSeek V4 Pro worker for complex implementation, ultrawork, and high-risk edits."
+model = "deepseek-v4-pro"
+model_provider = "deepseek_proxy"
+model_reasoning_effort = "high"
+developer_instructions = """# dcc-worker-pro
+
+You are the high-rigor DCC worker. Use DeepSeek V4 Pro reasoning for complex implementation,
+ultrawork, deep refactors, and high-risk edits. Keep changes scoped, verify with real commands,
+and continue until the requested outcome is complete or a concrete blocker is found."""

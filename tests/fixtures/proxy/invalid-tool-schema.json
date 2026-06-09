@@ -1,0 +1,15 @@
+{
+  "request": {
+    "model": "deepseek-v4-pro",
+    "input": "Use a bad tool.",
+    "tools": [
+      {
+        "type": "function",
+        "name": "bad_tool",
+        "parameters": {
+          "type": "array"
+        }
+      }
+    ]
+  }
+}

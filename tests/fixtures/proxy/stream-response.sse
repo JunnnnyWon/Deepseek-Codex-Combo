@@ -1,0 +1,5 @@
+data: {"id":"chatcmpl_stream","choices":[{"index":0,"delta":{"content":"hello ","reasoning_content":"hidden-chain"}}]}
+
+data: {"id":"chatcmpl_stream","choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_1","type":"function","function":{"name":"get_diagnostics","arguments":"{\"path\":\"src/index.ts\"}"}}]}}]}
+
+data: [DONE]

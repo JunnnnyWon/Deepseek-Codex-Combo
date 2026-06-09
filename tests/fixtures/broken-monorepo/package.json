@@ -1,0 +1,7 @@
+{
+  "name": "dcc-fixture-broken-monorepo",
+  "private": true,
+  "scripts": {
+    "test": "node missing-entry.mjs"
+  }
+}

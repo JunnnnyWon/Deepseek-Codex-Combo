@@ -1,0 +1,10 @@
+.dcc/evidence
+.dcc/release-docker
+.dcc/sandbox-home
+.dcc/secrets
+.git
+.pnpm-store
+dist
+node_modules
+**/node_modules
+*.log

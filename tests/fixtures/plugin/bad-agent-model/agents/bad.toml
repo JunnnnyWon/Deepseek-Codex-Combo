@@ -1,0 +1,4 @@
+name = "bad-agent"
+description = "Invalid model fixture."
+model = "gpt-5.2"
+model_provider = "deepseek_proxy"

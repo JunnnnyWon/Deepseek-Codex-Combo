@@ -1,0 +1,5 @@
+{
+  "commands": ["cargo test"],
+  "name": "rust-cli",
+  "status": "healthy"
+}

@@ -1,0 +1,6 @@
+{
+  "hook_event_name": "PostToolUse",
+  "file_path": "tests/fixtures/hooks/generated.ts",
+  "tool_name": "Edit",
+  "content": "const answer: number = ;"
+}

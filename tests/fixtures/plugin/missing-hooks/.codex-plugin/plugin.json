@@ -1,0 +1,15 @@
+{
+  "name": "missing-hooks",
+  "version": "0.1.0",
+  "description": "Fixture plugin with missing hooks companion file.",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Missing Hooks",
+    "shortDescription": "Invalid plugin fixture",
+    "longDescription": "Invalid plugin fixture that intentionally omits hooks/hooks.json.",
+    "developerName": "DCC",
+    "category": "Developer Tools",
+    "defaultPrompt": ["Validate missing hooks fixture."]
+  }
+}

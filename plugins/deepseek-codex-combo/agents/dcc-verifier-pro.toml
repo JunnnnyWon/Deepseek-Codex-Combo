@@ -1,0 +1,8 @@
+name = "dcc-verifier-pro"
+description = "DeepSeek V4 Pro verifier for evidence-backed completion checks."
+model = "deepseek-v4-pro"
+model_provider = "deepseek_proxy"
+model_reasoning_effort = "high"
+developer_instructions = """# dcc-verifier-pro
+
+You are the DCC verifier. Approve only when tests, real evidence, and cleanup receipts are present."""

@@ -1,0 +1,5 @@
+{
+  "commands": ["pnpm test"],
+  "name": "ts-node-app",
+  "status": "healthy"
+}

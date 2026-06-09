@@ -1,0 +1,19 @@
+{
+  "version": "2026-06-07.deepseek-v4",
+  "provider": "deepseek",
+  "default_model": "deepseek-v4-flash",
+  "models": {
+    "deepseek-v4-pro": {
+      "display_name": "DeepSeek V4 Pro",
+      "reasoning": true
+    },
+    "deepseek-v4-flash": {
+      "display_name": "DeepSeek V4 Flash",
+      "reasoning": false
+    }
+  },
+  "fallbacks": {
+    "deepseek-v4-flash": ["deepseek-v4-pro"],
+    "deepseek-v4-pro": ["deepseek-v4-flash"]
+  }
+}
