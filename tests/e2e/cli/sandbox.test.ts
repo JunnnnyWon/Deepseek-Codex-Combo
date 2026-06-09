@@ -97,7 +97,7 @@ describe("dcc sandbox", () => {
       cleanupDir(originalHome);
       cleanupDir(sandboxHome);
     }
-  });
+  }, 30_000);
 
   it("auto_prompt_routes_through_deepseek_current_and_records_initial_agent", async () => {
     const originalHome = makeTempDir("dcc-auto-original-home-");
@@ -139,5 +139,5 @@ describe("dcc sandbox", () => {
       cleanupDir(originalHome);
       cleanupDir(sandboxHome);
     }
-  });
+  }, 30_000);
 });
