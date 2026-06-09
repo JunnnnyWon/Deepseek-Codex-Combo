@@ -14,6 +14,9 @@ It verifies:
 
 - isolated container `HOME=/home/dcc-user`
 - isolated container `CODEX_HOME=/home/dcc-user/.codex`
+- npm tarball install with `npm install -g`
+- bare `dcc` defaulting to isolated `dcc sandbox run`
+- `dcc auth login`, `dcc auth status`, and saved local key discovery
 - release payload install from `.dcc/release-docker/files`
 - `deepseek-flash`, `deepseek-proxy`, and `deepseek-current` Codex profile smoke
 - default Flash sandbox launcher behavior

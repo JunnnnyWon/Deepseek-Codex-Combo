@@ -20,12 +20,44 @@ Setting a model name does not handle the operational surface Codex needs:
 
 ## Requirements
 
-- Node.js 20 or newer.
+- Node.js 24 or newer.
 - `pnpm` 10.33.0 for local development.
 - Codex CLI installed for real Codex usage.
-- `DEEPSEEK_API_KEY` only when you explicitly run live checks or the proxy against DeepSeek.
+- A DeepSeek API key for live sandbox and proxy usage.
 
 ## Install
+
+Run the isolated sandbox without installing into your original Codex home:
+
+```bash
+npx deepseek-codex-combo@latest
+```
+
+The default `dcc` command is intentionally sandbox-first. It runs `dcc sandbox run`,
+uses `.dcc/sandbox-home` as the sandbox `HOME`, writes Codex state only under that
+isolated home, starts the local proxy, launches Codex, and stops the proxy when
+Codex exits. On first run, DCC prompts for a DeepSeek API key and stores it in
+`.dcc/secrets/deepseek.env` with `0600` permissions. Press Enter to skip and add
+the key later.
+
+For a persistent terminal command:
+
+```bash
+npm install -g deepseek-codex-combo
+dcc
+```
+
+Manage the saved local key:
+
+```bash
+dcc auth login
+dcc auth status
+dcc auth logout
+```
+
+Inside Codex, run `dcc auth login` from the terminal when you need to replace the
+stored DeepSeek API key. You can also bypass local storage with
+`export DEEPSEEK_API_KEY="sk-..."`.
 
 For local development:
 

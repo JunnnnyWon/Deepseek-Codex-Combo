@@ -22,6 +22,7 @@ const codexHome = process.env.CODEX_HOME ?? join(userHome, ".codex");
 const releaseDir = join(repoRoot, ".dcc", "release-docker");
 const releaseRoot = join(releaseDir, "files");
 const releaseCli = join(releaseRoot, "dist", "bin", "dcc.mjs");
+const npmPrefix = join(userHome, ".npm-global");
 const installedCli = join(
   codexHome,
   "plugins",
@@ -35,6 +36,11 @@ const installedCli = join(
 );
 
 const secret = process.env.DEEPSEEK_API_KEY ?? "";
+const npmEnv = {
+  ...process.env,
+  PATH: `${join(npmPrefix, "bin")}:${process.env.PATH ?? ""}`,
+  npm_config_prefix: npmPrefix,
+};
 
 const redact = createRedactor(secret);
 const runStep = createStepRunner({ redact, repoRoot, stepsDir });
@@ -61,6 +67,53 @@ const writeMockFixture = () => {
     },
   });
   return fixturePath;
+};
+
+const installPackedCliAndAssertSandboxDefault = async () => {
+  mkdirSync(npmPrefix, { recursive: true });
+  const pack = runStep("npm-pack", "npm", ["pack", "--pack-destination", evidenceDir, "--json"], {
+    timeout: 120_000,
+  });
+  const [packEntry] = JSON.parse(pack.stdout);
+  if (packEntry === undefined || typeof packEntry.filename !== "string") {
+    throw new Error("npm pack did not return a package filename");
+  }
+
+  runStep("npm-install-global", "npm", ["install", "-g", join(evidenceDir, packEntry.filename)], {
+    env: npmEnv,
+    timeout: 300_000,
+  });
+  runStep("global-dcc-help", "dcc", ["--help"], { env: npmEnv });
+  runStep("global-dcc-auth-login", "dcc", ["auth", "login", "--key", "sk-docker-mock-key"], {
+    env: { ...npmEnv, DEEPSEEK_API_KEY: "" },
+  });
+  const authStatus = runStep("global-dcc-auth-status", "dcc", ["auth", "status"], {
+    env: { ...npmEnv, DEEPSEEK_API_KEY: "" },
+  });
+  assertText("global auth status", authStatus.stdout, "source: local-file");
+
+  const port = await getFreePort();
+  const sandboxHome = join(userHome, "dcc-npm-sandbox");
+  runStep("global-dcc-default-sandbox", "dcc", [], {
+    env: {
+      ...npmEnv,
+      DCC_PROXY_PORT: String(port),
+      DCC_SANDBOX_HOME: sandboxHome,
+      DCC_SANDBOX_NO_DOCTOR: "1",
+      DCC_SANDBOX_SKIP_CODEX: "1",
+      DEEPSEEK_API_KEY: "",
+    },
+    timeout: 900_000,
+  });
+  assertFile(join(sandboxHome, ".codex", "config.toml"));
+  runStep("global-dcc-sandbox-status", "dcc", ["sandbox", "status"], {
+    env: {
+      ...npmEnv,
+      DCC_PROXY_PORT: String(port),
+      DCC_SANDBOX_HOME: sandboxHome,
+      DEEPSEEK_API_KEY: "",
+    },
+  });
 };
 
 const routeAndAssert = (name, prompt, expectedModel, expectedAgent) => {
@@ -98,6 +151,7 @@ const main = async () => {
   runStep("pnpm-build", "pnpm", ["build"], { timeout: 600_000 });
   rmSync(releaseDir, { force: true, recursive: true });
   runStep("package", process.execPath, ["bin/dcc.mjs", "package", "--out", releaseDir]);
+  await installPackedCliAndAssertSandboxDefault();
 
   const port = await getFreePort();
   const installArgs = [

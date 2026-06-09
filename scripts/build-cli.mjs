@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { chmod, cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import ts from "typescript";
@@ -71,6 +71,7 @@ const buildBin = async (fileName) => {
   await mkdir(dirname(outputPath), { recursive: true });
   const source = await readFile(sourcePath, "utf8");
   await writeFile(outputPath, rewriteImportSpecifiers(source), "utf8");
+  await chmod(outputPath, 0o755);
 };
 
 const acquireDistLock = async () => {

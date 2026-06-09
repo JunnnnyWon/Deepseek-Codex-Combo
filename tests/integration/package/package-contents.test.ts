@@ -30,7 +30,20 @@ interface ChecksumManifest {
 }
 
 interface NpmPackEntry {
-  readonly files: readonly { readonly path: string }[];
+  readonly files: readonly { readonly mode: number; readonly path: string }[];
+}
+
+interface RootPackageJson {
+  readonly bin: {
+    readonly dcc: string;
+    readonly "deepseek-codex-combo": string;
+  };
+  readonly engines: { readonly node: string };
+  readonly license: string;
+  readonly private?: boolean;
+  readonly publishConfig: { readonly access: string };
+  readonly repository: { readonly type: string; readonly url: string };
+  readonly scripts: { readonly prepublishOnly: string };
 }
 
 const requiredReleasePaths = [
@@ -140,8 +153,13 @@ describe("release package contents", () => {
     expect(pack.status, `${pack.stdout}\n${pack.stderr}`).toBe(0);
 
     const [entry] = JSON.parse(pack.stdout) as readonly NpmPackEntry[];
+    const packedFiles = entry?.files ?? [];
+    expect(packedFiles.find((file) => file.path === "dist/bin/dcc.mjs")?.mode).toBe(493);
+    expect(
+      packedFiles.find((file) => file.path === "dist/bin/deepseek-codex-combo.mjs")?.mode,
+    ).toBe(493);
     const forbiddenPaths =
-      entry?.files
+      packedFiles
         .map((file) => file.path)
         .filter((path) =>
           path.startsWith("plugins/deepseek-codex-combo/dist/")
@@ -151,6 +169,21 @@ describe("release package contents", () => {
 
     expect(forbiddenPaths).toEqual([]);
   }, 90_000);
+
+  it("root_package_is_public_npm_cli_ready", () => {
+    const packageJson = readJson<RootPackageJson>(join(process.cwd(), "package.json"));
+
+    expect(packageJson.private).toBeUndefined();
+    expect(packageJson.license).toBe("MIT");
+    expect(packageJson.engines.node).toBe(">=24");
+    expect(packageJson.publishConfig.access).toBe("public");
+    expect(packageJson.repository.url).toBe(
+      "git+https://github.com/JunnnnyWon/Deepseek-Codex-Combo.git",
+    );
+    expect(packageJson.bin.dcc).toBe("dist/bin/dcc.mjs");
+    expect(packageJson.bin["deepseek-codex-combo"]).toBe("dist/bin/deepseek-codex-combo.mjs");
+    expect(packageJson.scripts.prepublishOnly).toBe("pnpm build");
+  });
 
   it("copied_plugin_dist_cli_runs_core_hook_and_mcp_surfaces", () => {
     const build = sharedBuild;

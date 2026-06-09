@@ -2,6 +2,7 @@ import type { SpawnSyncReturns } from "node:child_process";
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { promptForDeepSeekApiKey, resolveDeepSeekApiKey, writeDeepSeekEnvFile } from "./auth.ts";
 import { checkProxyStatus } from "./proxyLifecycle.ts";
 
 export interface SandboxCommandInput {
@@ -26,6 +27,8 @@ type RoutedInitialPrompt =
 type SandboxEnvKey =
   | "DCC_AUTO_PROMPT"
   | "DCC_CODEX_PROFILE"
+  | "DCC_SANDBOX_NO_DOCTOR"
+  | "DCC_SANDBOX_SKIP_CODEX"
   | "DCC_PROXY_PORT"
   | "DCC_SANDBOX_HOME"
   | "DEEPSEEK_API_KEY";
@@ -80,22 +83,6 @@ const resolveProfile = (input: SandboxCommandInput): string => {
   return resolveAutoPrompt(input) === undefined ? "deepseek-proxy" : "deepseek-current";
 };
 
-const readDeepSeekEnvFile = (cwd: string): string | undefined => {
-  const envPath = join(cwd, ".dcc", "secrets", "deepseek.env");
-  if (!existsSync(envPath)) {
-    return undefined;
-  }
-  const lines = readFileSync(envPath, "utf8").split(/\r?\n/);
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed.startsWith("DEEPSEEK_API_KEY=")) {
-      continue;
-    }
-    return trimmed.slice("DEEPSEEK_API_KEY=".length).replace(/^["']|["']$/g, "");
-  }
-  return undefined;
-};
-
 const readDccAgent = (codexHome: string): string | undefined => {
   const profilePath = join(codexHome, "profiles", "deepseek-current.toml");
   if (!existsSync(profilePath)) {
@@ -128,9 +115,12 @@ const buildRoutedInitialPrompt = (codexHome: string, prompt: string): RoutedInit
   };
 };
 
-const buildSandboxEnv = (input: SandboxCommandInput, home: string): NodeJS.ProcessEnv => {
+const buildSandboxEnv = (
+  input: SandboxCommandInput,
+  home: string,
+  deepSeekApiKey: string | undefined,
+): NodeJS.ProcessEnv => {
   const codexHome = join(home, ".codex");
-  const deepSeekApiKey = readEnv(input.env, "DEEPSEEK_API_KEY") ?? readDeepSeekEnvFile(input.cwd);
   return {
     ...input.env,
     ...(deepSeekApiKey === undefined ? {} : { DEEPSEEK_API_KEY: deepSeekApiKey }),
@@ -167,6 +157,13 @@ const failFromProcess = (
 ): SandboxCommandResult => ({
   exitCode: output.status ?? 1,
   stderr: `${label}_failed\n${output.stdout}${output.stderr}`,
+});
+
+const renderAuthSkipped = (): SandboxCommandResult => ({
+  exitCode: 2,
+  stdout: ["auth: skipped", "run later: dcc auth login", "or: export DEEPSEEK_API_KEY", ""].join(
+    "\n",
+  ),
 });
 
 const renderSandboxPaths = (home: string, profile: string, port: number): string =>
@@ -207,31 +204,47 @@ const runSandboxReset = (input: SandboxCommandInput): SandboxCommandResult => {
   return { exitCode: 0, stdout: `sandbox reset: removed ${home}\n` };
 };
 
-const runSandboxRun = (input: SandboxCommandInput): SandboxCommandResult => {
+const runSandboxRun = async (input: SandboxCommandInput): Promise<SandboxCommandResult> => {
   const home = resolveSandboxHome(input);
   const port = resolveProxyPort(input);
   const profile = resolveProfile(input);
   const codexHome = join(home, ".codex");
   const mockUpstream = readOption(input.args, "--mock-upstream");
   const autoPrompt = resolveAutoPrompt(input);
-  const skipCodex = hasOption(input.args, "--skip-codex");
+  const skipCodex =
+    hasOption(input.args, "--skip-codex") || readEnv(input.env, "DCC_SANDBOX_SKIP_CODEX") === "1";
   const keepProxy = hasOption(input.args, "--keep-proxy");
-  const noDoctor = hasOption(input.args, "--no-doctor");
+  const noDoctor =
+    hasOption(input.args, "--no-doctor") || readEnv(input.env, "DCC_SANDBOX_NO_DOCTOR") === "1";
   const noInstall = hasOption(input.args, "--no-install");
-  const env = buildSandboxEnv(input, home);
+  const initialKey = resolveDeepSeekApiKey(input.cwd, input.env);
+  let deepSeekApiKey = initialKey?.key;
   const lines = [renderSandboxPaths(home, profile, port)];
   let exitCode = 0;
   let stopProxyAfterRun = false;
   let initialPrompt = autoPrompt;
 
-  if (mockUpstream === undefined && readEnv(env, "DEEPSEEK_API_KEY") === undefined) {
-    return {
-      exitCode: 1,
-      stderr:
-        "DEEPSEEK_API_KEY required for sandbox run. Export it or pass --mock-upstream for offline smoke.\n",
-    };
+  if (mockUpstream === undefined && deepSeekApiKey === undefined) {
+    if (hasOption(input.args, "--skip-auth")) {
+      return renderAuthSkipped();
+    }
+    const prompted = await promptForDeepSeekApiKey(input);
+    if (prompted.kind === "entered") {
+      writeDeepSeekEnvFile(input.cwd, prompted.key);
+      deepSeekApiKey = prompted.key;
+      lines.push("auth: saved");
+    } else if (prompted.kind === "skipped") {
+      return renderAuthSkipped();
+    } else {
+      return {
+        exitCode: 2,
+        stderr:
+          "auth_prompt_unavailable\nrun `dcc auth login`, export DEEPSEEK_API_KEY, or pass --skip-auth.\n",
+      };
+    }
   }
 
+  const env = buildSandboxEnv(input, home, deepSeekApiKey);
   mkdirSync(codexHome, { recursive: true });
 
   if (!noInstall) {
@@ -317,7 +330,7 @@ export const runSandboxCommand = async (
     case "reset":
       return runSandboxReset(input);
     case "run":
-      return runSandboxRun(input);
+      return await runSandboxRun(input);
     case "status":
       return await runSandboxStatus(input);
   }

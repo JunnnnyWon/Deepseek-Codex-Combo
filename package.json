@@ -1,11 +1,26 @@
 {
   "name": "deepseek-codex-combo",
   "version": "0.1.0",
-  "private": true,
+  "description": "Sandbox-first Codex harness for DeepSeek models, provider proxying, plugin workflows, and model routing.",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JunnnnyWon/Deepseek-Codex-Combo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JunnnnyWon/Deepseek-Codex-Combo/issues"
+  },
+  "homepage": "https://github.com/JunnnnyWon/Deepseek-Codex-Combo#readme",
+  "engines": {
+    "node": ">=24"
+  },
   "bin": {
-    "dcc": "./dist/bin/dcc.mjs",
-    "deepseek-codex-combo": "./dist/bin/deepseek-codex-combo.mjs"
+    "dcc": "dist/bin/dcc.mjs",
+    "deepseek-codex-combo": "dist/bin/deepseek-codex-combo.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     ".agents",
@@ -28,7 +43,8 @@
     "test:docker:e2e:live": "node scripts/docker-user-install-e2e.mjs --live",
     "test:docker:e2e:vitest": "vitest run tests/e2e/docker/user-install.test.ts",
     "build": "node scripts/build-cli.mjs && pnpm -r build",
-    "dcc": "node bin/dcc.mjs"
+    "dcc": "node bin/dcc.mjs",
+    "prepublishOnly": "pnpm build"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",

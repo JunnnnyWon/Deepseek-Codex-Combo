@@ -37,6 +37,122 @@ const getFreePort = async (): Promise<number> =>
   });
 
 describe("dcc sandbox", () => {
+  it("bare_dcc_defaults_to_isolated_sandbox_run", async () => {
+    const originalHome = makeTempDir("dcc-bare-original-home-");
+    const sandboxHome = makeTempDir("dcc-bare-sandbox-home-");
+    const cwd = makeTempDir("dcc-bare-cwd-");
+    const port = await getFreePort();
+    try {
+      const result = runDcc(
+        [],
+        {
+          ...process.env,
+          DCC_PROXY_PORT: String(port),
+          DCC_SANDBOX_HOME: sandboxHome,
+          DCC_SANDBOX_SKIP_CODEX: "1",
+          DCC_SANDBOX_NO_DOCTOR: "1",
+          DEEPSEEK_API_KEY: "sk-test-secret",
+          HOME: originalHome,
+        },
+        cwd,
+        30_000,
+      );
+      const output = `${result.stdout}\n${result.stderr}`;
+
+      expect(result.status).toBe(0);
+      expect(output).toContain(`sandbox home: ${sandboxHome}`);
+      expect(output).toContain("codex profile: deepseek-proxy");
+      expect(existsSync(join(originalHome, ".codex", "config.toml"))).toBe(false);
+      expect(existsSync(join(sandboxHome, ".codex", "config.toml"))).toBe(true);
+    } finally {
+      runDcc(["proxy", "stop", "--home", sandboxHome, "--port", String(port)], process.env);
+      cleanupDir(originalHome);
+      cleanupDir(sandboxHome);
+      cleanupDir(cwd);
+    }
+  }, 30_000);
+
+  it("run_prompts_and_saves_api_key_when_first_run_has_no_key", async () => {
+    const originalHome = makeTempDir("dcc-prompt-original-home-");
+    const sandboxHome = makeTempDir("dcc-prompt-sandbox-home-");
+    const cwd = makeTempDir("dcc-prompt-cwd-");
+    const port = await getFreePort();
+    try {
+      const result = runDcc(
+        [
+          "sandbox",
+          "run",
+          "--home",
+          sandboxHome,
+          "--proxy-port",
+          String(port),
+          "--skip-codex",
+          "--no-doctor",
+        ],
+        {
+          ...process.env,
+          DCC_TEST_API_KEY_PROMPT_RESPONSE: "sk-test-secret",
+          HOME: originalHome,
+        },
+        cwd,
+        30_000,
+      );
+      const output = `${result.stdout}\n${result.stderr}`;
+
+      expect(result.status).toBe(0);
+      expect(output).toContain("auth: saved");
+      expect(output).not.toContain("sk-test-secret");
+      expect(readFileSync(join(cwd, ".dcc", "secrets", "deepseek.env"), "utf8")).toContain(
+        "DEEPSEEK_API_KEY",
+      );
+      expect(existsSync(join(originalHome, ".codex", "config.toml"))).toBe(false);
+    } finally {
+      runDcc(["proxy", "stop", "--home", sandboxHome, "--port", String(port)], process.env);
+      cleanupDir(originalHome);
+      cleanupDir(sandboxHome);
+      cleanupDir(cwd);
+    }
+  }, 30_000);
+
+  it("run_skip_auth_exits_without_touching_original_codex", async () => {
+    const originalHome = makeTempDir("dcc-skip-auth-original-home-");
+    const sandboxHome = makeTempDir("dcc-skip-auth-sandbox-home-");
+    const cwd = makeTempDir("dcc-skip-auth-cwd-");
+    const port = await getFreePort();
+    try {
+      const result = runDcc(
+        [
+          "sandbox",
+          "run",
+          "--home",
+          sandboxHome,
+          "--proxy-port",
+          String(port),
+          "--skip-auth",
+          "--skip-codex",
+        ],
+        {
+          ...process.env,
+          DEEPSEEK_API_KEY: "",
+          HOME: originalHome,
+        },
+        cwd,
+      );
+      const output = `${result.stdout}\n${result.stderr}`;
+
+      expect(result.status).toBe(2);
+      expect(output).toContain("auth: skipped");
+      expect(output).toContain("dcc auth login");
+      expect(existsSync(join(originalHome, ".codex", "config.toml"))).toBe(false);
+      expect(existsSync(join(cwd, ".dcc", "secrets", "deepseek.env"))).toBe(false);
+    } finally {
+      runDcc(["proxy", "stop", "--home", sandboxHome, "--port", String(port)], process.env);
+      cleanupDir(originalHome);
+      cleanupDir(sandboxHome);
+      cleanupDir(cwd);
+    }
+  });
+
   it("prints_side_effect_free_help", () => {
     const home = makeTempDir("dcc-sandbox-help-home-");
     const cwd = makeTempDir("dcc-sandbox-help-cwd-");

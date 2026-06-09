@@ -1,4 +1,5 @@
 const commandUsages = {
+  auth: "Usage: dcc auth login|status|logout [--key <sk-...>|--stdin|--skip]",
   "ast-grep": "Usage: dcc ast-grep search|rewrite|describe|list-languages ...",
   contracts: "Usage: dcc contracts verify [--offline|--live]",
   debug: "Usage: dcc debug redact|patch-config",
@@ -21,7 +22,7 @@ const commandUsages = {
     "Usage: dcc proxy start|status|stop|transform-fixture|stream-fixture|reasoning-error-fixture [options]",
   rules: "Usage: dcc rules list --cwd <path> [--budget <chars>] [--dry-run]",
   sandbox:
-    "Usage: dcc sandbox run|status|path|reset [--home <path>] [--proxy-port <port>] [--profile deepseek-proxy|deepseek-flash|deepseek-current] [--auto-prompt <text>] [--skip-codex] [--keep-proxy] [--mock-upstream <path>]",
+    "Usage: dcc sandbox run|status|path|reset [--home <path>] [--proxy-port <port>] [--profile deepseek-proxy|deepseek-flash|deepseek-current] [--auto-prompt <text>] [--skip-codex] [--skip-auth] [--keep-proxy] [--mock-upstream <path>]",
   skills: "Usage: dcc skills inspect <skill>",
   "start-work":
     "Usage: dcc start-work <plan|verify> [--cwd <path>] [--session-id <id>] [--dry-run] [--complete-task <n>] [--evidence <path>]",

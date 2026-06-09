@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { parse as parseToml } from "smol-toml";
 
 const commands = [
+  "auth",
   "install",
   "uninstall",
   "doctor",
@@ -62,7 +63,28 @@ ${commands.map((command) => `  ${command}`).join("\n")}
 const [command] = process.argv.slice(2);
 const args = process.argv.slice(3);
 
-if (command === undefined || command === "--help" || command === "-h") {
+const writeCommandResult = (result) => {
+  if (result.stdout !== undefined) {
+    console.log(redactText(result.stdout.trimEnd(), process.env.HOME));
+  }
+  if (result.stderr !== undefined) {
+    console.error(redactText(result.stderr.trimEnd(), process.env.HOME));
+  }
+  process.exit(result.exitCode);
+};
+
+if (command === undefined) {
+  const { runSandboxCommand } = await import("../packages/cli/src/sandbox.ts");
+  const result = await runSandboxCommand({
+    args: ["run"],
+    binPath: fileURLToPath(import.meta.url),
+    cwd: process.cwd(),
+    env: process.env,
+  });
+  writeCommandResult(result);
+}
+
+if (command === "--help" || command === "-h") {
   printHelp();
   process.exit(0);
 }
@@ -79,6 +101,18 @@ if (args.includes("--help") || args.includes("-h")) {
     console.log(helpText);
     process.exit(0);
   }
+}
+
+if (command === "auth") {
+  const { runAuthCommand } = await import("../packages/cli/src/auth.ts");
+  const result = await runAuthCommand({
+    args,
+    cwd: process.cwd(),
+    env: process.env,
+    stdin: process.stdin,
+    stdout: process.stdout,
+  });
+  writeCommandResult(result);
 }
 
 const readOption = (options, name) => {

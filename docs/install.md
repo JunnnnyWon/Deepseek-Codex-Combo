@@ -1,5 +1,33 @@
 # Install
 
+Public npm usage:
+
+```bash
+npx deepseek-codex-combo@latest
+```
+
+The bare `dcc` command defaults to `dcc sandbox run`. It uses an isolated
+`.dcc/sandbox-home` and does not modify the user's normal `~/.codex`.
+
+Persistent terminal command:
+
+```bash
+npm install -g deepseek-codex-combo
+dcc
+```
+
+API key management:
+
+```bash
+dcc auth login
+dcc auth status
+dcc auth logout
+```
+
+On first sandbox run, DCC prompts for the DeepSeek API key and stores it in
+`.dcc/secrets/deepseek.env` with `0600` permissions. Press Enter to skip; run
+`dcc auth login` later from the terminal, including from inside Codex.
+
 Development install:
 
 ```bash
@@ -77,7 +105,7 @@ The launcher writes and uses the `deepseek-current` profile and then starts Code
 node bin/dcc.mjs sandbox run --auto-prompt "이 코드 구조를 간단히 요약해줘"
 ```
 
-Run `node dist/bin/dcc.mjs install --no-tui --provider-mode=proxy` from `.dcc/release-local/files` when installing from a local release payload. `npx deepseek-codex-combo install` is reserved for a future published npm package.
+Run `node dist/bin/dcc.mjs install --no-tui --provider-mode=proxy` from `.dcc/release-local/files` when installing from a local release payload. For npm users, keep `npx deepseek-codex-combo@latest` as the default sandbox-first command and use `npx deepseek-codex-combo@latest install --no-tui --provider-mode=proxy` only for advanced user-level Codex installation.
 
 Proxy mode writes a DeepSeek proxy provider block plus the managed root `model_catalog_json` block that points to `.codex/model-catalog.deepseek-codex-combo.json`. Plugin-only mode installs plugin and MCP declarations without a provider block. Native provider mode is intentionally fail-closed until Codex support is proven by contract tests.
 

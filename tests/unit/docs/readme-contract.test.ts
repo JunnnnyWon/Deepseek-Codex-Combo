@@ -41,6 +41,10 @@ describe("README and docs contract", () => {
       expect(readme).toContain(`## ${section}`);
     }
 
+    expect(readme).toContain("npx deepseek-codex-combo@latest");
+    expect(readme).toContain("npm install -g deepseek-codex-combo");
+    expect(readme).toContain("dcc auth login");
+    expect(readme).toContain("Run the isolated sandbox");
     expect(readme).toContain('export DEEPSEEK_API_KEY="sk-..."');
     expect(readme).toContain("node bin/dcc.mjs package --out .dcc/release-local");
     expect(readme).toContain("node bin/dcc.mjs install --no-tui --provider-mode=proxy");

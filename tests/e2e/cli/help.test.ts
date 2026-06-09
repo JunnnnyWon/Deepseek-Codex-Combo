@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const coreCommands = [
+  "auth",
   "install",
   "uninstall",
   "doctor",
@@ -35,6 +36,7 @@ const helpCommands = [
   ["loop", "--help"],
   ["init-deep", "--help"],
   ["sandbox", "--help"],
+  ["auth", "--help"],
 ] as const;
 
 const makeTempDir = (): string => mkdtempSync(join(tmpdir(), "dcc-help-test-"));
