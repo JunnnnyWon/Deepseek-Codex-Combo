@@ -14,6 +14,7 @@ const coreCommands = [
   "start-work",
   "loop",
   "switch",
+  "sandbox",
   "models",
   "rules",
   "evidence",
@@ -33,6 +34,7 @@ const helpCommands = [
   ["start-work", "--help"],
   ["loop", "--help"],
   ["init-deep", "--help"],
+  ["sandbox", "--help"],
 ] as const;
 
 const makeTempDir = (): string => mkdtempSync(join(tmpdir(), "dcc-help-test-"));

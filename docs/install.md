@@ -26,14 +26,25 @@ node bin/dcc.mjs install --help
 Sandbox-first install:
 
 ```bash
-export DCC_SANDBOX_HOME="$(mktemp -d)"
-node bin/dcc.mjs install --home "$DCC_SANDBOX_HOME" --no-tui --provider-mode=proxy --proxy-port 41473
-CODEX_HOME="$DCC_SANDBOX_HOME/.codex" HOME="$DCC_SANDBOX_HOME" codex --profile deepseek-proxy --help
-CODEX_HOME="$DCC_SANDBOX_HOME/.codex" HOME="$DCC_SANDBOX_HOME" codex --profile deepseek-flash --help
-node bin/dcc.mjs proxy start --background --home "$DCC_SANDBOX_HOME" --host 127.0.0.1 --port 41473
-node bin/dcc.mjs proxy status --home "$DCC_SANDBOX_HOME" --port 41473
-node bin/dcc.mjs proxy stop --home "$DCC_SANDBOX_HOME" --port 41473
-node bin/dcc.mjs uninstall --home "$DCC_SANDBOX_HOME"
+node bin/dcc.mjs sandbox run
+node bin/dcc.mjs sandbox status
+node bin/dcc.mjs sandbox path
+```
+
+The sandbox command defaults to `.dcc/sandbox-home` under the current checkout and launches Codex
+with isolated `HOME` and `CODEX_HOME`, so the user's normal `~/.codex` is not modified. It starts
+the proxy before Codex launches and stops it when Codex exits.
+
+Offline sandbox smoke:
+
+```bash
+node bin/dcc.mjs sandbox run --mock-upstream tests/fixtures/proxy/text-response.json --skip-codex
+```
+
+Sandbox cleanup:
+
+```bash
+node bin/dcc.mjs sandbox reset --force
 ```
 
 User-level dry runs:
@@ -52,19 +63,18 @@ codex --profile deepseek-proxy
 codex --profile deepseek-flash
 ```
 
-The repository sandbox launcher uses Flash by default. To launch the same
-sandbox directly on Pro:
+The repository sandbox launcher delegates to the official sandbox command. It uses Pro by default;
+to launch the same sandbox directly on Flash:
 
 ```bash
-DCC_CODEX_PROFILE=deepseek-proxy ./run-dcc-sandbox.command
+DCC_CODEX_PROFILE=deepseek-flash ./run-dcc-sandbox.command
 ```
 
-To let DCC choose Pro or Flash from the initial prompt, use `DCC_AUTO_PROMPT`.
-The launcher writes and uses the `deepseek-current` profile, prefixes the initial request with
-the routed DCC agent, and then starts Codex:
+To let DCC choose Pro or Flash from the initial prompt, use `--auto-prompt` or `DCC_AUTO_PROMPT`.
+The launcher writes and uses the `deepseek-current` profile and then starts Codex:
 
 ```bash
-DCC_AUTO_PROMPT="이 코드 구조를 간단히 요약해줘" ./run-dcc-sandbox.command
+node bin/dcc.mjs sandbox run --auto-prompt "이 코드 구조를 간단히 요약해줘"
 ```
 
 Run `node dist/bin/dcc.mjs install --no-tui --provider-mode=proxy` from `.dcc/release-local/files` when installing from a local release payload. `npx deepseek-codex-combo install` is reserved for a future published npm package.

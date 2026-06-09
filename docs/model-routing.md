@@ -1,6 +1,6 @@
 # Model Routing
 
-`deepseek-v4-flash` is the default for ordinary work, lightweight worker, and lookup tasks. `deepseek-v4-pro` is selected for planning, verification, security, ultrawork, and high-reasoning tasks.
+`dcc sandbox run` starts Codex on `deepseek-v4-pro` by default through the `deepseek-proxy` profile. Automatic routing still uses `deepseek-v4-flash` for ordinary work, lightweight worker, and lookup tasks, and selects `deepseek-v4-pro` for planning, verification, security, ultrawork, and high-reasoning tasks.
 
 Useful commands:
 
@@ -9,9 +9,10 @@ node bin/dcc.mjs models --offline
 node bin/dcc.mjs switch auto --prompt "explain this code" --dry-run
 node bin/dcc.mjs switch pro --dry-run
 node bin/dcc.mjs switch flash --dry-run
+node bin/dcc.mjs sandbox run
 ```
 
-The generated `deepseek-flash` Codex profile uses `model_provider = "deepseek_proxy"` and is the default sandbox launcher profile. The generated `deepseek-proxy` profile uses the same provider and selects `deepseek-v4-pro` when you want to force Pro.
+The generated `deepseek-proxy` Codex profile uses `model_provider = "deepseek_proxy"` and is the default sandbox profile. The generated `deepseek-flash` profile uses the same provider and selects `deepseek-v4-flash` when you want to force Flash.
 
 `switch auto` classifies the prompt, chooses the DCC agent, and writes `.codex/profiles/deepseek-current.toml`:
 

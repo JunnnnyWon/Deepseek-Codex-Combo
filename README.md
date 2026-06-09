@@ -59,20 +59,30 @@ Command help is read-only. `install --help is safe` because it prints usage and 
 node bin/dcc.mjs install --help
 ```
 
-For sandbox-first Codex setup, use a temporary home so your normal Codex state is untouched:
+For sandbox-first Codex setup, use the official sandbox command. It installs DCC under
+`.dcc/sandbox-home/.codex`, starts the local proxy, runs doctor, launches Codex with
+isolated `HOME` and `CODEX_HOME`, and stops the proxy when Codex exits. Your normal
+`~/.codex` is untouched:
 
 ```bash
-export DCC_SANDBOX_HOME="$(mktemp -d)"
-node bin/dcc.mjs install --home "$DCC_SANDBOX_HOME" --no-tui --provider-mode=proxy --proxy-port 41473
-CODEX_HOME="$DCC_SANDBOX_HOME/.codex" HOME="$DCC_SANDBOX_HOME" codex --profile deepseek-proxy --help
-CODEX_HOME="$DCC_SANDBOX_HOME/.codex" HOME="$DCC_SANDBOX_HOME" codex --profile deepseek-flash --help
-node bin/dcc.mjs proxy start --background --home "$DCC_SANDBOX_HOME" --host 127.0.0.1 --port 41473
-node bin/dcc.mjs proxy status --home "$DCC_SANDBOX_HOME" --port 41473
-node bin/dcc.mjs proxy stop --home "$DCC_SANDBOX_HOME" --port 41473
-node bin/dcc.mjs uninstall --home "$DCC_SANDBOX_HOME"
+node bin/dcc.mjs sandbox run
 ```
 
-For user-level Codex setup from this checkout after the sandbox check:
+Inspect or reset only the isolated sandbox:
+
+```bash
+node bin/dcc.mjs sandbox status
+node bin/dcc.mjs sandbox path
+node bin/dcc.mjs sandbox reset --force
+```
+
+Offline smoke without calling DeepSeek:
+
+```bash
+node bin/dcc.mjs sandbox run --mock-upstream tests/fixtures/proxy/text-response.json --skip-codex
+```
+
+For user-level Codex setup from this checkout after the sandbox check, explicitly use `install`:
 
 ```bash
 node bin/dcc.mjs install --dry-run --provider-mode=proxy
@@ -161,6 +171,8 @@ dcc doctor --live --strict
 dcc proxy start
 dcc proxy status
 dcc proxy stop
+dcc sandbox run
+dcc sandbox status
 dcc models --offline
 dcc switch auto --prompt "explain this code" --dry-run
 dcc switch pro --dry-run
@@ -175,21 +187,23 @@ Developer equivalents use `node bin/dcc.mjs` from this repository.
 
 ## Model routing: Pro vs Flash
 
-- `deepseek-v4-flash` is the default route for ordinary work, lightweight worker, search, and compatibility tasks.
+- `dcc sandbox run` starts Codex on Pro by default through the `deepseek-proxy` profile.
+- `deepseek-v4-flash` is the default route for ordinary work, lightweight worker, search, and compatibility tasks when automatic routing is requested.
 - `deepseek-v4-pro` is selected automatically for planning, verification, security, ultrawork, and complex edits.
 - `deepseek-proxy` starts Codex on Pro; `deepseek-flash` starts Codex on Flash.
 - `dcc switch auto --prompt "..."` classifies the request, chooses the model and DCC agent, and writes `deepseek-current`.
 - `dcc switch pro --dry-run` and `dcc switch flash --dry-run` show the managed profile patch before applying it.
 
-The sandbox launcher can route an initial prompt automatically:
+The sandbox command can route an initial prompt automatically:
 
 ```bash
-DCC_AUTO_PROMPT="보안 취약점과 권한 문제를 검증해줘" ./run-dcc-sandbox.command
+node bin/dcc.mjs sandbox run --auto-prompt "보안 취약점과 권한 문제를 검증해줘"
 ```
 
-With `DCC_AUTO_PROMPT`, the launcher prefixes the initial Codex request with the routed DCC agent
+With `--auto-prompt`, the launcher uses the `deepseek-current` profile after routing through
+`dcc switch auto`. Codex receives the original prompt through the chosen model route
 (`dcc-worker-flash`, `dcc-librarian-flash`, `dcc-planner-pro`, `dcc-verifier-pro`, or
-`dcc-worker-pro`) so Codex delegates first and then continues the task.
+`dcc-worker-pro`).
 
 ## Cache diagnostics
 

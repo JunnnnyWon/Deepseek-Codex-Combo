@@ -15,6 +15,7 @@ const commands = [
   "start-work",
   "loop",
   "switch",
+  "sandbox",
   "models",
   "rules",
   "evidence",
@@ -366,6 +367,29 @@ if (command === "switch") {
   } catch (error) {
     const message = error instanceof Error ? error.message : "unknown switch failure";
     console.error(`switch_failed: ${redactText(message, home)}`);
+    process.exit(1);
+  }
+}
+
+if (command === "sandbox") {
+  try {
+    const { runSandboxCommand } = await import("../packages/cli/src/sandbox.ts");
+    const result = await runSandboxCommand({
+      args,
+      binPath: fileURLToPath(import.meta.url),
+      cwd: process.cwd(),
+      env: process.env,
+    });
+    if (result.stdout !== undefined) {
+      console.log(redactText(result.stdout.trimEnd(), process.env.HOME));
+    }
+    if (result.stderr !== undefined) {
+      console.error(redactText(result.stderr.trimEnd(), process.env.HOME));
+    }
+    process.exit(result.exitCode);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "unknown sandbox failure";
+    console.error(`sandbox_failed: ${redactText(message, process.env.HOME)}`);
     process.exit(1);
   }
 }
