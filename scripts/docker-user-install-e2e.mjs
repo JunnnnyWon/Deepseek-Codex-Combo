@@ -56,18 +56,36 @@ const writeJson = (path, value) => {
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`, "utf8");
 };
 
+const inspectBuildx = () => {
+  const result = spawnSync("docker", ["buildx", "version"], {
+    cwd: repoRoot,
+    encoding: "utf8",
+    maxBuffer: 10 * 1024 * 1024,
+    timeout: 30_000,
+  });
+  const output = redact(`${result.stdout ?? ""}${result.stderr ?? ""}`);
+  writeFileSync(join(evidenceDir, "preflight-buildx.log"), output, "utf8");
+  if (result.error !== undefined || result.status !== 0) {
+    return {
+      available: false,
+      output: output.trim(),
+    };
+  }
+  return {
+    available: true,
+    output: output.trim(),
+  };
+};
+
 const preflight = () => {
   mkdirSync(evidenceDir, { recursive: true });
   const dockerVersion = docker("docker version", ["version", "--format", "{{json .}}"], {
     logPath: join(evidenceDir, "preflight-docker-version.log"),
     timeout: 30_000,
   });
-  const buildxVersion = docker("docker buildx version", ["buildx", "version"], {
-    logPath: join(evidenceDir, "preflight-buildx.log"),
-    timeout: 30_000,
-  });
+  const buildx = inspectBuildx();
   const payload = {
-    buildxVersion: buildxVersion.trim(),
+    buildx,
     dockerVersion: JSON.parse(dockerVersion),
     mode: liveMode ? "live" : "mock",
     paths: {
